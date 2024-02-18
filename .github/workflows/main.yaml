@@ -2,7 +2,7 @@ name: deploy webapp to azure
 
 env:
   AZURE_WEBAPP_NAME: folkmoz-ai
-  NODE_VERSION: 20.x
+  NODE_VERSION: 20
   GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
   DATABASE_URL: ${{ secrets.DATABASE_URL }}
 on:
@@ -38,7 +38,7 @@ jobs:
     runs-on: ubuntu-latest
     needs: build
     environment:
-      name: Production
+      name: production
       url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
 
     steps:
