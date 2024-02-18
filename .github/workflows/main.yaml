@@ -32,7 +32,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: next-app
-          path: ./build
+          path: .
 
   deploy:
     runs-on: ubuntu-latest
@@ -45,7 +45,6 @@ jobs:
       - name: Download production artifacts
         uses: actions/download-artifact@v2
         with:
-          path: build
           name: next-app
 
       - name: Deploy to Azure Web App
@@ -55,4 +54,4 @@ jobs:
           app-name: ${{ env.AZURE_WEBAPP_NAME }}
           slot-name: Production
           publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }}
-          package: next-app
+          package: .
