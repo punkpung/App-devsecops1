@@ -5,7 +5,7 @@ import { handler } from "./_actions/send-new-text";
 import { getRoomName } from "@/actions/room";
 import { redirect } from "next/navigation";
 
-export const runtime = "edge";
+// export const runtime = "edge";
 
 export async function generateMetadata({
   params,
