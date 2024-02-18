@@ -3,11 +3,6 @@ import { db } from "@/lib/db";
 import { rooms } from "@/lib/db/schema/schema";
 import { eq } from "drizzle-orm";
 import { deleteAllMessagesByChatId } from "./message";
-import {
-  // unstable_cache as cache,
-  revalidatePath,
-  revalidateTag,
-} from "next/cache";
 import { cache } from "react";
 
 export const getRoomEntries = cache(async () => {
