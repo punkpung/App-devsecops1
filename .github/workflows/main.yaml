@@ -30,7 +30,7 @@ jobs:
           npm run build
 
       - name: Zip all files
-        run: zip next.zip ./* build -qr
+        run: zip next.zip ./* -qr
 
       - name: Deploy to Azure WebApp
         id: deploy-to-webapp
