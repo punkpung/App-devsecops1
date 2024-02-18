@@ -1,8 +1,8 @@
-name: deploy webapp toazure
+name: deploy webapp to azure
 
 env:
   AZURE_WEBAPP_NAME: folkmoz-ai
-  NODE_VERSION: 20.0.9
+  NODE_VERSION: 20
 
 on:
   push:
