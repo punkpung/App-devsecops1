@@ -2,7 +2,7 @@ name: deploy webapp to azure
 
 env:
   AZURE_WEBAPP_NAME: folkmoz-ai
-  NODE_VERSION: 20.x
+  NODE_VERSION: 20
   GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
   DATABASE_URL: ${{ secrets.DATABASE_URL }}
 on:
@@ -31,7 +31,7 @@ jobs:
       - name: Archive production artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: next-app
+          name: node-app
           path: .
 
   deploy:
@@ -45,7 +45,7 @@ jobs:
       - name: Download production artifacts
         uses: actions/download-artifact@v2
         with:
-          name: next-app
+          name: node-app
 
       - name: Deploy to Azure Web App
         id: deploy-to-webapp
