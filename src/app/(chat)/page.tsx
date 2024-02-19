@@ -1,5 +1,5 @@
 import { db } from "@/lib/db";
-import { SubbmitButton } from "../_components/Form";
+import { CreateChatInput, SubbmitButton } from "./_components/Form";
 import { rooms } from "@/lib/db/schema/schema";
 import { nanoid } from "@/lib/utils";
 import { redirect } from "next/navigation";
@@ -36,13 +36,7 @@ export default function HomePage() {
                   In each chat, Gemini will remember the previous messages you
                   send in it
                 </p>
-                <input
-                  name="chatName"
-                  type="text"
-                  className="focus:border-primary-500 w-[90%] rounded-md border border-neutral-200 p-2 text-white focus:outline-none"
-                  autoFocus
-                  autoComplete="off"
-                />
+                <CreateChatInput />
               </div>
             </div>
           </div>

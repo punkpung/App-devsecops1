@@ -57,6 +57,7 @@ export const SidebarItems = ({ rooms }: SidebarItems) => {
             router.refresh();
             setOpenModal(false);
             window.location.reload();
+            router.replace("/");
           }}
         >
           <DialogHeader>

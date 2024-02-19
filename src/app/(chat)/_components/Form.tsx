@@ -19,3 +19,18 @@ export function SubbmitButton() {
     </button>
   );
 }
+
+export function CreateChatInput() {
+  const { pending } = useFormStatus();
+
+  return (
+    <input
+      disabled={pending}
+      name="chatName"
+      type="text"
+      className="focus:border-primary-500 w-[90%] rounded-md border border-neutral-200 p-2 text-white focus:outline-none"
+      autoFocus
+      autoComplete="off"
+    />
+  );
+}
