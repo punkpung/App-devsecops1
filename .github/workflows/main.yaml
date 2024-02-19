@@ -12,6 +12,7 @@ on:
     branches:
       - main
     paths-ignore:
+      - ".github/workflows/*.yaml" # No longer Azure app service anymore
       - "README.md"
   workflow_dispatch:
 
