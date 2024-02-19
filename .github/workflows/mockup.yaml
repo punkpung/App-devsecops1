@@ -1,0 +1,104 @@
+# Define the job name
+name: deploy webapp to azure
+
+# Define environment variables for the workflow
+env:
+  AZURE_WEBAPP_NAME: folkmoz-ai # Your Azure Web App name from the Azure portal
+  NODE_VERSION: "20.x" # Node.js version to use
+
+  GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }} # Variable for the API key in my WebApp
+  DATABASE_URL: ${{ secrets.DATABASE_URL }} # Variable for the database URL in my WebApp
+
+# Define when the workflow should be triggered
+# In this case, the workflow is triggered on push to the main branch and manually
+on:
+  push:
+    branches:
+      - main
+    paths-ignore: # Skip the workflow when the following files are modified
+      - "README.md"
+      - ".github/workflows/mockup.yaml"
+  workflow_dispatch:
+
+jobs:
+  # Define the build job
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      # Checkout the repository
+      - uses: actions/checkout@v4
+
+      # Use the Node.js version specified in the environment variables
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+
+      # Install the dependencies and build the project
+      - name: npm install, build
+        run: |
+          npm install
+          npm run build --if-present
+
+      # Copy the necessary files for deployment to the artifact staging directory
+      - name: Copy necessary files to artifact staging directory
+        run: |
+          cp -R ./.next/standalone ./site-deploy
+          cp -R ./.next/static ./site-deploy/.next/static
+          cp -R ./public ./site-deploy/public
+
+      # Zip the artifact and move it to the root directory
+      - name: Zip artifact
+        run: |
+          cd site-deploy
+          zip -r next-app.zip .
+          mv next-app.zip ../
+          cd ..
+
+      # Diagnostic to check the files in the artifact staging directory
+      - name: Diagnostic
+        run: |
+          ls -al
+          ls -al site-deploy
+          ls -al next-app.zip
+
+      # Package and upload the artifact to use in the deployment job
+      - name: Package and upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: next-app # Name of the artifact
+          path: next-app.zip
+
+  deploy:
+    permissions:
+      contents: none
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: "Production" # Name of the environment
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+
+    steps:
+      # Download the artifact from the build job
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v4
+        with:
+          name: next-app
+
+      # Deploy the artifact to the Azure Web App
+      - name: Deploy to Azure WebApp
+        uses: azure/webapps-deploy@v2
+        with:
+          app-name: ${{ env.AZURE_WEBAPP_NAME }} # Name of the Azure app service
+          package: ${{ github.workspace }}/next-app.zip # Path to the artifact
+          publish-profile: ${{ secrets.AZURE_WEBAPP_PUBLISH_PROFILE }} # Publish profile for the Azure Web App
+
+      # Cleanup the artifact after deployment
+      - name: Cleanup
+        run: |
+          rm -rf ${{ github.workspace }}/next-app.zip
+
+      # Check the status of the deployed web app by making a request to the URL
+      - name: Check status
+        run: |
+          curl -s -o /dev/null -w "%{http_code}" https://${{ env.AZURE_WEBAPP_NAME }}.azurewebsites.net
