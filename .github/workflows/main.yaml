@@ -33,16 +33,28 @@ jobs:
 
       - name: Copy necessary files to artifact staging directory
         run: |
-          mkdir -p site-deploy
-          cp -R ./.next/standalone/* ./site-deploy
-          cp -R ./.next/static/* ./site-deploy/.next/static
-          cp -R ./public ./site-deploy
+          cp -R ./.next/standalone ./site-deploy
+          cp -R ./.next/static ./site-deploy/.next/static
+          cp -R ./public ./site-deploy/public
+
+      - name: Zip artifact
+        run: |
+          cd site-deploy
+          zip -r next-app.zip .
+          mv next-app.zip ../
+          cd ..
+
+      - name: Diagnostic
+        run: |
+          ls -al
+          ls -al site-deploy
+          ls -al next-app.zip
 
       - name: Package and upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: next-app
-          path: ./site-deploy/next-app.zip
+          path: next-app.zip
 
   deploy:
     permissions:
