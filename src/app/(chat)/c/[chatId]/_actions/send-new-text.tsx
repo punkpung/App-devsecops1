@@ -53,7 +53,7 @@ export const handler = async ({ messages }: { messages: Message[] }) => {
 
       await db.insert(messagesType).values(data);
 
-      revalidatePath(`/c`);
+      revalidatePath("/c");
     },
   });
 

@@ -103,7 +103,7 @@ const SidebarLink = ({
     <Link
       href={`/c/${room.publicId}`}
       className={cn(
-        `hover:text-primary text-muted-foreground group inline-block w-full rounded-md p-2 text-xs transition-colors hover:shadow`,
+        "hover:text-primary text-muted-foreground group inline-block w-full rounded-md p-2 text-xs transition-colors hover:shadow",
         {
           "text-primary bg-popover/80 font-semibold": active,
           "hover:bg-popover/50": !active,
